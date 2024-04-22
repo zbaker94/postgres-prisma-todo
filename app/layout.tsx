@@ -1,14 +1,9 @@
+import ThemeProvider from '@/components/mui-wrapper/ThemeProvider';
 import './globals.css'
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v13-appRouter';
-import { ThemeProvider } from '@mui/material/styles';
-import theme from '@/theme';
+import { Suspense } from 'react';
 
-export const metadata = {
-  metadataBase: new URL('https://postgres-prisma.vercel.app'),
-  title: 'Vercel Postgres Demo with Prisma',
-  description:
-    'A simple Next.js app with Vercel Postgres as the database and Prisma as the ORM',
-}
+import CircularProgress from '@mui/material/CircularProgress';
 
 
 
@@ -17,15 +12,18 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
+
   return (
+    <>
     <html lang="en">
       <body>
         <AppRouterCacheProvider>
-          <ThemeProvider theme={theme}>
-            {children}
-          </ThemeProvider>
+            <ThemeProvider>
+                {children}
+            </ThemeProvider>
         </AppRouterCacheProvider>
       </body>
     </html>
+    </>
   )
 }
