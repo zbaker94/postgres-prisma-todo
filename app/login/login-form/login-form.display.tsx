@@ -3,6 +3,7 @@ import { TextField, Button, FormHelperText, Typography } from "@mui/material";
 import Grid from "@mui/material/Unstable_Grid2";
 
 import { AnimatePresence, motion, stagger } from "framer-motion";
+import { useEffect } from "react";
 
 type loginFormProps = {
   onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
@@ -22,13 +23,14 @@ const LoginFormDisplay = ({
       <motion.form
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
         onSubmit={onSubmit}
       >
         <Grid container spacing={2} flexDirection="column">
           <Grid textAlign="left">
             <TextField
               component={motion.div}
-              transition={{ stagger: 0.7 }}
+              transition={{ delay: 0.1 }}
               initial={{ opacity: 0, x: -12 }}
               animate={{ opacity: 1, x: 0 }}
               required
@@ -51,7 +53,7 @@ const LoginFormDisplay = ({
           <Grid textAlign="left">
             <TextField
               component={motion.div}
-              transition={{ stagger: 0.7 }}
+              transition={{ delay: 0.2 }}
               initial={{ opacity: 0, x: -12 }}
               animate={{ opacity: 1, x: 0 }}
               required
@@ -77,7 +79,7 @@ const LoginFormDisplay = ({
                   <Button
                     variant="outlined"
                     component={motion.button}
-                    transition={{ stagger: 0.1 }}
+                    transition={{ delay: 0.2 }}
                     initial={{ opacity: 0, y: 12 }}
                     animate={{ opacity: 1, y: 0 }}
                     color="secondary"
@@ -91,7 +93,7 @@ const LoginFormDisplay = ({
                 <Button
                   fullWidth
                   component={motion.button}
-                  transition={{ stagger: 0.3 }}
+                  transition={{ delay: 0.3 }}
                   initial={{ opacity: 0, y: 12 }}
                   animate={{ opacity: 1, y: 0 }}
                   disabled={!canSubmitFlag}
@@ -108,6 +110,7 @@ const LoginFormDisplay = ({
             <Link href="/forgot-password">
               <Button
                 component={motion.button}
+                transition={{ delay: 0.3 }}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 variant="text"
