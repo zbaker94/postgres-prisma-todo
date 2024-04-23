@@ -1,9 +1,8 @@
 import Link from "next/link";
-import { TextField, Button, FormHelperText, Typography } from "@mui/material";
+import { TextField, Button, FormHelperText } from "@mui/material";
 import Grid from "@mui/material/Unstable_Grid2";
 
-import { AnimatePresence, motion, stagger } from "framer-motion";
-import { useEffect } from "react";
+import { motion } from "framer-motion";
 
 type loginFormProps = {
   onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
