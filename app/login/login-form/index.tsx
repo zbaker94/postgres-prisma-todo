@@ -1,50 +1,86 @@
 "use client";
-import { useMemo } from 'react'
+import { useMemo } from "react";
 
-import { useForm } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { loginSchema } from '@/lib/zod';
-import { login } from '../actions';
-import LoginFormDisplay from './login-form.display';
+import { Card, CardHeader, CardContent } from "@mui/material";
 
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { loginSchema } from "@/lib/zod";
+import { login } from "../actions";
 
-export const dynamic = 'force-dynamic'
+import LoginFormDisplay from "./login-form.display";
+import { motion } from "framer-motion";
 
-type loginData = typeof loginSchema._type
+export const dynamic = "force-dynamic";
+
+type loginData = typeof loginSchema._type;
 
 const LoginForm = () => {
-    const {
-        register,
-        handleSubmit,
-        formState,
-        setError,
-      } = useForm<loginData>({
-        resolver: zodResolver(loginSchema),
-        defaultValues: {
-          username: "",
-          password: ""
-        },
-        mode: "all"
-      })
-    
-      console.log(formState)
-    
-      const onSubmit = handleSubmit(async (data) => {
-        try {
-          const user = await login(data)
-          console.log(user)
-        } catch (error) {
-          const {message} = error as {message: string}
-          setError("root", {message})
-        }
-      
-      })
-    
-      const canSubmitFlag = useMemo(() => formState.isValid && !formState.isSubmitting, [formState.isSubmitting, formState.isValid])
+  const { register, handleSubmit, formState, setError } = useForm<loginData>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: {
+      username: "",
+      password: "",
+    },
+    mode: "all",
+  });
 
-      return (
-            <LoginFormDisplay onSubmit={onSubmit} formState={formState} register={register} canSubmitFlag={canSubmitFlag} />
-      )
-}
+  console.log(formState);
+
+  const onSubmit = handleSubmit(async (data) => {
+    try {
+      const user = await login(data);
+      console.log(user);
+    } catch (error) {
+      const { message } = error as { message: string };
+      setError("root", { message });
+    }
+  });
+
+  const canSubmitFlag = useMemo(
+    () => formState.isValid && !formState.isSubmitting,
+    [formState.isSubmitting, formState.isValid],
+  );
+
+  return (
+    <Card
+      variant="outlined"
+      sx={{
+        width: "25%",
+        position: "absolute",
+      }}
+      component={motion.div}
+      initial={{
+        opacity: 0,
+        transform: "translateX(-50%) translateY(-60%)",
+        top: "60%",
+        left: "50%",
+      }}
+      animate={{
+        opacity: 1,
+        transform: "translateX(-50%) translateY(-45%)",
+        top: "45%",
+        left: "50%",
+      }}
+      exit={{
+        opacity: 0,
+        transform: "translateX(-50%) translateY(-60%)",
+        top: "60%",
+        left: "50%",
+      }}
+      // layoutId="form-card"
+    >
+      <CardHeader title="Login" />
+      <CardContent>
+        <LoginFormDisplay
+          onSubmit={onSubmit}
+          formState={formState}
+          register={register}
+          canSubmitFlag={canSubmitFlag}
+        />
+      </CardContent>
+    </Card>
+  );
+};
 
 export default LoginForm;

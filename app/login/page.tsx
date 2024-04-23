@@ -1,16 +1,20 @@
-import { Card, CardHeader, CardContent} from '@mui/material'
+"use client";
 
-import LoginForm from './login-form';
+import { useSearchParams } from "next/navigation";
+
+import { AnimatePresence } from "framer-motion";
+
+import LoginForm from "./login-form";
+import RegisterForm from "./register-form";
 
 export default function Login() {
+  const searchParams = useSearchParams();
+  const action = searchParams.get("action");
+
   return (
-    <main>
-      <Card variant="outlined" sx={{width: "25%", position: "absolute", top: "45%", left: "50%", transform: "translateX(-50%) translateY(-45%)"}}>
-        <CardHeader title="Login" />
-        <CardContent>
-            <LoginForm />
-        </CardContent>
-      </Card>
-    </main>
-  )
+    <AnimatePresence>
+      {action === "login" ? <LoginForm /> : null}
+      {action === "register" ? <RegisterForm /> : null}
+    </AnimatePresence>
+  );
 }
