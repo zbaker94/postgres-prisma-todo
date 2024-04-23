@@ -1,27 +1,22 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  Card,
-  CardHeader,
-  CardContent,
-  TextField,
-  Button,
-  FormHelperText,
-} from "@mui/material";
-import Grid from "@mui/material/Unstable_Grid2";
-import { useMemo, useCallback } from "react";
+import { Card, CardHeader, CardContent, Snackbar, Button } from "@mui/material";
+import { useMemo, useCallback, useState } from "react";
 import { useForm } from "react-hook-form";
+
 import { registerSchema } from "@/lib/zod";
 
 import { registerAccount } from "../actions";
 import { motion } from "framer-motion";
-import Link from "next/link";
 import RegisterFormDisplay from "./register-form.display";
+import Link from "next/link";
 
 type registerData = typeof registerSchema._type;
 
 const RegisterForm = () => {
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+
   const {
     register,
     handleSubmit,
@@ -45,6 +40,7 @@ const RegisterForm = () => {
     try {
       const newUser = await registerAccount(data);
       console.log(newUser);
+      setSnackbarOpen(true);
     } catch (error) {
       const { message } = error as { message: string };
       setError("root", { message });
@@ -139,6 +135,19 @@ const RegisterForm = () => {
           canSubmitFlag={canSubmitFlag}
         />
       </CardContent>
+      <Snackbar
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        message="Account created successfully"
+        action={
+          <Link href="/login?action=login">
+            <Button variant="text" color="primary">
+              Login
+            </Button>
+          </Link>
+        }
+      />
     </Card>
   );
 };
