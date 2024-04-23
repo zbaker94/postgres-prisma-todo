@@ -1,4 +1,10 @@
-import { TextField, Button, FormHelperText } from "@mui/material";
+import {
+  TextField,
+  Button,
+  FormHelperText,
+  CircularProgress,
+  Box,
+} from "@mui/material";
 import Grid from "@mui/material/Unstable_Grid2";
 
 import { motion } from "framer-motion";
@@ -158,18 +164,22 @@ const RegisterFormDisplay = ({
         </Grid>
         <Grid container spacing={2} justifyContent={"space-between"}>
           <Grid>
-            <Button
-              component={motion.button}
-              transition={{ delay: 0.5 }}
-              initial={{ opacity: 0, y: 15 }}
-              animate={{ opacity: 1, x: 0 }}
-              color="primary"
-              variant="contained"
-              type="submit"
-              disabled={!canSubmitFlag}
-            >
-              Register
-            </Button>
+            {formState.isSubmitting ? (
+              <CircularProgress />
+            ) : (
+              <Button
+                component={motion.button}
+                transition={{ delay: 0.5 }}
+                initial={{ opacity: 0, y: 15 }}
+                animate={{ opacity: 1, x: 0 }}
+                color="primary"
+                variant="contained"
+                type="submit"
+                disabled={!canSubmitFlag}
+              >
+                Register
+              </Button>
+            )}
           </Grid>
           <Grid>
             <Link href="/login?action=login">
