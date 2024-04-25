@@ -73,21 +73,6 @@ const LoginFormDisplay = ({
         <Grid width="100%">
           <Grid container spacing={3} justifyContent="center">
             <Grid xs={4}>
-              <Link href="/login?action=register">
-                <Button
-                  variant="outlined"
-                  component={motion.button}
-                  transition={{ delay: 0.2 }}
-                  initial={{ opacity: 0, y: 12 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  color="secondary"
-                >
-                  Register
-                </Button>
-              </Link>
-            </Grid>
-
-            <Grid>
               <Button
                 fullWidth
                 component={motion.button}
@@ -101,6 +86,20 @@ const LoginFormDisplay = ({
               >
                 Login
               </Button>
+            </Grid>
+            <Grid>
+              <Link href="/login?action=register">
+                <Button
+                  variant="outlined"
+                  component={motion.button}
+                  transition={{ delay: 0.2 }}
+                  initial={{ opacity: 0, y: 12 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  color="secondary"
+                >
+                  Register
+                </Button>
+              </Link>
             </Grid>
           </Grid>
         </Grid>

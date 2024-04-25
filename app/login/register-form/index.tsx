@@ -23,6 +23,7 @@ const RegisterForm = () => {
     formState,
     setError,
     clearErrors,
+    reset,
     getValues,
   } = useForm<registerData>({
     resolver: zodResolver(registerSchema),
@@ -41,6 +42,7 @@ const RegisterForm = () => {
       const newUser = await registerAccount(data);
       console.log(newUser);
       setSnackbarOpen(true);
+      reset();
     } catch (error) {
       const { message } = error as { message: string };
       setError("root", { message });
