@@ -16,7 +16,6 @@ export const login = async ({
   try {
     await loginSchemaServer.parseAsync({ username, password });
   } catch (error) {
-    console.log(error);
     // if validation fails, return error
     throw new Error("Invalid Credentials");
   }
@@ -30,12 +29,10 @@ export const login = async ({
 
   // if account does not exist, return error
   if (!account) {
-    console.error("Account Not Found for Username: ", username);
     throw new Error("Invalid Credentials");
   }
 
   if (!(await bcrypt.compare(password, account.password))) {
-    console.error("Password Mismatch for Username: ", username);
     throw new Error("Invalid Credentials");
   }
 

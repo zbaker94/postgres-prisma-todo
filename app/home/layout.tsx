@@ -11,26 +11,28 @@ import {
   Button,
   Avatar,
   Grid,
+  List,
+  ListItem,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
 } from "@mui/material";
 import { useTheme, Theme, CSSObject } from "@mui/material/styles";
 
-import MenuIcon from "@mui/icons-material/Menu";
-import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
-import ChevronRightIcon from "@mui/icons-material/ChevronRight";
+import CalendarMonth from "@mui/icons-material/CalendarMonth";
 import { useState } from "react";
-import { delay, motion } from "framer-motion";
+import { motion } from "framer-motion";
 import Link from "next/link";
 import Cookies from "js-cookie";
 
 const drawerWidth = 240;
 
-export default function HomeLyout({
+export default function HomeLayout({
   children, // will be a page or nested layout
 }: {
   children: React.ReactNode;
 }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  console.log({ sidebarOpen });
   const theme = useTheme();
   return (
     <Box sx={{ display: "flex" }}>
@@ -38,7 +40,6 @@ export default function HomeLyout({
         position="fixed"
         sx={{ zIndex: theme.zIndex.drawer + 1 }}
         component={motion.header}
-        transition={{ ease: "easeOut", duration: 0.2 }}
         initial={{ marginLeft: 0, width: "100%", y: -10 }}
         animate={
           sidebarOpen
@@ -60,7 +61,6 @@ export default function HomeLyout({
         open={sidebarOpen}
         PaperProps={{
           component: motion.div,
-          transition: { delay: !sidebarOpen ? 0.1 : 0 },
           initial: {
             x: -drawerWidth,
           },
@@ -68,7 +68,7 @@ export default function HomeLyout({
             x: 0,
             width: sidebarOpen
               ? drawerWidth
-              : theme.components?.MuiDrawer?.defaultProps?.PaperProps?.width,
+              : `calc(${theme.spacing(7)} + 1px)`,
           },
         }}
         onMouseOver={() => setSidebarOpen(true)}
@@ -90,8 +90,35 @@ export default function HomeLyout({
           <Avatar sx={{ marginRight: "4px" }} />
           <Typography>Username</Typography>
         </Box>
-        {/* Sidebar Contents */}
         <Divider />
+        <List>
+          <ListItem key={"Today"} disablePadding sx={{ display: "block" }}>
+            <ListItemButton
+              sx={{
+                minHeight: 48,
+                justifyContent: sidebarOpen ? "initial" : "center",
+                px: 2.5,
+              }}
+            >
+              <ListItemIcon
+                sx={{
+                  minWidth: 0,
+                  justifyContent: "center",
+                }}
+              >
+                <CalendarMonth />
+              </ListItemIcon>
+              <ListItemText
+                primary={"Today"}
+                primaryTypographyProps={{
+                  component: motion.div,
+                  initial: { opacity: 0 },
+                  animate: { opacity: sidebarOpen ? 1 : 0 },
+                }}
+              />
+            </ListItemButton>
+          </ListItem>
+        </List>
         <Divider />
       </Drawer>
       <Box component="main" sx={{ flexGrow: 1, p: 3 }}>

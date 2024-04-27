@@ -13,13 +13,15 @@ import LoginFormDisplay from "./login-form.display";
 import { login } from "../actions";
 
 import { useRouter } from "next/navigation";
+import { useAuthStore } from "@/lib/providers/auth.store.provider";
+import { users } from "@prisma/client";
 
 export const dynamic = "force-dynamic";
 
 type loginData = typeof loginSchema._type;
 
 const LoginForm = () => {
-  const router = useRouter();
+  const setGlobalAuthState = useAuthStore((store) => store.logIn);
 
   const { register, handleSubmit, formState, setError } = useForm<loginData>({
     resolver: zodResolver(loginSchema),
@@ -32,13 +34,13 @@ const LoginForm = () => {
 
   const onSubmit = handleSubmit(async (data) => {
     try {
+      debugger;
       const user = await login(data);
-      console.log(user);
-      //todo set cookie
-      cookies.set("token", user.token, { expires: new Date(user.expires) });
-      // todo set user in global state
-
-      router.push("/");
+      setGlobalAuthState(
+        user.token,
+        new Date(user.expires),
+        user.user as users,
+      );
     } catch (error) {
       const { message } = error as { message: string };
       setError("root", { message });
