@@ -24,6 +24,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import Cookies from "js-cookie";
+import { useAuthStore } from "@/lib/providers/auth.store.provider";
 
 const drawerWidth = 240;
 
@@ -33,6 +34,7 @@ export default function HomeLayout({
   children: React.ReactNode;
 }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const { user } = useAuthStore((store) => ({ user: store.user }));
   const theme = useTheme();
   return (
     <Box sx={{ display: "flex" }}>
@@ -88,7 +90,7 @@ export default function HomeLayout({
           }}
         >
           <Avatar sx={{ marginRight: "4px" }} />
-          <Typography>Username</Typography>
+          <Typography>{user?.name}</Typography>
         </Box>
         <Divider />
         <List>
