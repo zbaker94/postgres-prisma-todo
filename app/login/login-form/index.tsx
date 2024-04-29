@@ -34,7 +34,6 @@ const LoginForm = () => {
 
   const onSubmit = handleSubmit(async (data) => {
     try {
-      debugger;
       const user = await login(data);
       setGlobalAuthState(
         user.token,

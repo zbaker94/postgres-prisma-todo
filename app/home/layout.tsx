@@ -25,17 +25,20 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import Cookies from "js-cookie";
 import { useAuthStore } from "@/lib/providers/auth.store.provider";
+import { useSearchParams } from "next/navigation";
 
 const drawerWidth = 240;
 
 export default function HomeLayout({
-  children, // will be a page or nested layout
+  children,
 }: {
   children: React.ReactNode;
 }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const { user } = useAuthStore((store) => ({ user: store.user }));
   const theme = useTheme();
+  const searchParams = useSearchParams();
+  const tab = searchParams.get("tab");
   return (
     <Box sx={{ display: "flex" }}>
       <AppBar
@@ -79,6 +82,7 @@ export default function HomeLayout({
         sx={{
           flexShrink: 0,
           whiteSpace: "nowrap",
+          overflowX: "hidden",
         }}
       >
         <Box
@@ -87,15 +91,21 @@ export default function HomeLayout({
             alignItems: "center",
             justifyContent: "left",
             padding: "8px",
+            overflowX: "hidden",
           }}
         >
           <Avatar sx={{ marginRight: "4px" }} />
           <Typography>{user?.name}</Typography>
         </Box>
         <Divider />
-        <List>
+        <List
+          sx={{
+            overflowX: "hidden",
+          }}
+        >
           <ListItem key={"Today"} disablePadding sx={{ display: "block" }}>
             <ListItemButton
+              selected={tab === "today"}
               sx={{
                 minHeight: 48,
                 justifyContent: sidebarOpen ? "initial" : "center",

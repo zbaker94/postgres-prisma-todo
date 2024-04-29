@@ -3,7 +3,7 @@
 import { createStore } from "zustand/vanilla";
 import { users } from "@prisma/client";
 import Cookies from "js-cookie";
-import { redirect } from "next/navigation";
+import { JwtPayload, jwtDecode } from "jwt-decode";
 
 export type authState = {
   token: string | null;
@@ -18,10 +18,33 @@ export type authActions = {
 
 export type AuthStoreType = authState & authActions;
 
+let token = null;
+let expires = null;
+let user = null;
+
+token = Cookies.get("token") || null;
+if (token) {
+  const tokenData = jwtDecode(token) as JwtPayload & users;
+  let expiresMS = tokenData.exp;
+  if (!expiresMS) {
+    console.warn("Token expires is invalid");
+    // TODO make reusable function to set new expires date
+    expiresMS = new Date().getDate() + 1000 * 60 * 10;
+  }
+  expires = new Date(expiresMS);
+  user = {
+    id: tokenData.id,
+    email: tokenData.email,
+    name: tokenData.name,
+    createdAt: tokenData.createdAt,
+    image: tokenData.image,
+  };
+}
+
 export const authInitState: authState = {
-  token: null,
-  expires: null,
-  user: null,
+  token,
+  expires,
+  user,
 };
 
 const logIn =
