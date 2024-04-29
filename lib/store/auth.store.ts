@@ -4,6 +4,7 @@ import { createStore } from "zustand/vanilla";
 import { users } from "@prisma/client";
 import Cookies from "js-cookie";
 import { JwtPayload, jwtDecode } from "jwt-decode";
+import { refreshLogin } from "./actions";
 
 export type authState = {
   token: string | null;
@@ -14,6 +15,7 @@ export type authState = {
 export type authActions = {
   logIn: (token: string, expires: Date, user: users) => void;
   logOut: () => void;
+  refreshToken: () => void;
 };
 
 export type AuthStoreType = authState & authActions;
@@ -48,21 +50,34 @@ export const authInitState: authState = {
 };
 
 const logIn =
-  (set: Function) => (token: string, expires: Date, user: users) => {
+  (set: Function, get: Function) =>
+  (token: string, expires: Date, user: users) => {
     Cookies.set("token", token, { expires: new Date(expires) });
     set({ token, expires, user });
   };
-const logOut = (set: Function) => () => {
+const logOut = (set: Function, get: Function) => () => {
   Cookies.remove("token");
   set({ token: null, expires: null, user: null });
 };
+const refreshToken = (set: Function, get: Function) => async () => {
+  const newState = await refreshLogin(get().token);
+  Cookies.set("token", newState.token, { expires: newState.expires });
+  set(newState);
+};
 
-const initializeStore = (set: Function, initState: authState) => ({
+const initializeStore = (
+  set: Function,
+  get: Function,
+  initState: authState,
+) => ({
   ...initState,
-  logIn: logIn(set),
-  logOut: logOut(set),
+  logIn: logIn(set, get),
+  logOut: logOut(set, get),
+  refreshToken: refreshToken(set, get),
 });
 
 export const createAuthStore = (initState: authState = authInitState) => {
-  return createStore<AuthStoreType>()((set) => initializeStore(set, initState));
+  return createStore<AuthStoreType>()((set, get) =>
+    initializeStore(set, get, initState),
+  );
 };

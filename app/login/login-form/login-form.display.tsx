@@ -88,7 +88,7 @@ const LoginFormDisplay = ({
               </Button>
             </Grid>
             <Grid>
-              <Link href="/login?action=register">
+              <Link href="?action=register">
                 <Button
                   variant="outlined"
                   component={motion.button}

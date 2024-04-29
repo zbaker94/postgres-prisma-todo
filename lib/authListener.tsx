@@ -6,10 +6,11 @@ import { useAuthStore } from "./providers/auth.store.provider";
 import { useRouter } from "next/navigation";
 import usePrevious from "./hooks/usePrevious";
 const AuthListener = () => {
-  const { token, expires, logOut } = useAuthStore((store) => ({
+  const { token, expires, logOut, refreshToken } = useAuthStore((store) => ({
     token: store.token,
     expires: store.expires,
     logOut: store.logOut,
+    refreshToken: store.refreshToken,
   }));
 
   const router = useRouter();
@@ -19,7 +20,6 @@ const AuthListener = () => {
   const expireTimeRef = useRef<number | null>(null);
 
   useEffect(() => {
-    debugger;
     const intervalId = IntervalIDRef.current;
     // if we have a token and expiration date, we have either logged in or refreshed somehow
     if (token && expires) {
@@ -28,10 +28,13 @@ const AuthListener = () => {
       }
 
       expireTimeRef.current = expires.getTime() - Date.now();
-      IntervalIDRef.current = setInterval(() => {
+      IntervalIDRef.current = setInterval(async () => {
         if (expireTimeRef.current && expireTimeRef.current <= 0) {
           logOut();
         } else if (expireTimeRef.current) {
+          if (expireTimeRef.current < 1000 * 60 * 2) {
+            await refreshToken();
+          }
           console.log(`expireTimeRef.current`, expireTimeRef.current);
           expireTimeRef.current = expireTimeRef.current - 1000;
         }
@@ -50,7 +53,7 @@ const AuthListener = () => {
         clearInterval(intervalId);
       }
     };
-  }, [token, expires, logOut, previousToken, router]);
+  }, [token, expires, logOut, previousToken, router, refreshToken]);
 
   return null;
 };

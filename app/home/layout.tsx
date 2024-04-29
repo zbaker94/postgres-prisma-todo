@@ -4,13 +4,10 @@ import {
   Box,
   AppBar,
   Toolbar,
-  IconButton,
   Typography,
   Drawer,
   Divider,
-  Button,
   Avatar,
-  Grid,
   List,
   ListItem,
   ListItemButton,
@@ -20,12 +17,40 @@ import {
 import { useTheme, Theme, CSSObject } from "@mui/material/styles";
 
 import CalendarMonth from "@mui/icons-material/CalendarMonth";
-import { useState } from "react";
+import PunchClock from "@mui/icons-material/PunchClock";
+import { useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
-import Cookies from "js-cookie";
+import GraphicEq from "@mui/icons-material/GraphicEq";
 import { useAuthStore } from "@/lib/providers/auth.store.provider";
 import { useSearchParams } from "next/navigation";
+
+const menuOptions = [
+  {
+    label: "Today",
+    key: "today",
+    icon: CalendarMonth,
+    get href() {
+      return `/home/${this.key}`;
+    },
+  },
+  {
+    label: "History",
+    key: "history",
+    icon: PunchClock,
+    get href() {
+      return `/home/${this.key}`;
+    },
+  },
+  {
+    label: "Stats",
+    key: "stats",
+    icon: GraphicEq,
+    get href() {
+      return `/home/${this.key}`;
+    },
+  },
+];
 
 const drawerWidth = 240;
 
@@ -34,6 +59,11 @@ export default function HomeLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const pathname = window.location.pathname;
+  const lastSubPath = useMemo(() => {
+    return pathname.split("/").pop();
+  }, [pathname]);
+  console.log({ pathname, lastSubPath });
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const { user } = useAuthStore((store) => ({ user: store.user }));
   const theme = useTheme();
@@ -103,33 +133,43 @@ export default function HomeLayout({
             overflowX: "hidden",
           }}
         >
-          <ListItem key={"Today"} disablePadding sx={{ display: "block" }}>
-            <ListItemButton
-              selected={tab === "today"}
-              sx={{
-                minHeight: 48,
-                justifyContent: sidebarOpen ? "initial" : "center",
-                px: 2.5,
-              }}
-            >
-              <ListItemIcon
-                sx={{
-                  minWidth: 0,
-                  justifyContent: "center",
-                }}
+          {menuOptions.map((option) => (
+            <ListItem key={option.key} disablePadding sx={{ display: "block" }}>
+              <Link
+                href={option.href}
+                style={{ textDecoration: "none", color: "inherit" }}
               >
-                <CalendarMonth />
-              </ListItemIcon>
-              <ListItemText
-                primary={"Today"}
-                primaryTypographyProps={{
-                  component: motion.div,
-                  initial: { opacity: 0 },
-                  animate: { opacity: sidebarOpen ? 1 : 0 },
-                }}
-              />
-            </ListItemButton>
-          </ListItem>
+                <ListItemButton
+                  selected={lastSubPath === option.key}
+                  sx={{
+                    minHeight: 48,
+                    justifyContent: sidebarOpen ? "initial" : "center",
+                    px: 2.5,
+                  }}
+                >
+                  <ListItemIcon
+                    sx={{
+                      minWidth: 0,
+                      justifyContent: "center",
+                    }}
+                  >
+                    <option.icon />
+                  </ListItemIcon>
+                  <ListItemText
+                    primary={option.label}
+                    primaryTypographyProps={{
+                      component: motion.div,
+                      initial: { opacity: 0, marginLeft: 0 },
+                      animate: {
+                        opacity: sidebarOpen ? 1 : 0,
+                        marginLeft: sidebarOpen ? 12 : 0,
+                      },
+                    }}
+                  />
+                </ListItemButton>
+              </Link>
+            </ListItem>
+          ))}
         </List>
         <Divider />
       </Drawer>
