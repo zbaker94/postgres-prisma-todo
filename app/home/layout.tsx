@@ -25,6 +25,8 @@ import GraphicEq from "@mui/icons-material/GraphicEq";
 import { useAuthStore } from "@/lib/providers/auth.store.provider";
 import { useSearchParams } from "next/navigation";
 
+import { usePathname } from "next/navigation";
+
 const menuOptions = [
   {
     label: "Today",
@@ -59,11 +61,10 @@ export default function HomeLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const pathname = window.location.pathname;
+  const pathname = usePathname();
   const lastSubPath = useMemo(() => {
     return pathname.split("/").pop();
   }, [pathname]);
-  console.log({ pathname, lastSubPath });
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const { user } = useAuthStore((store) => ({ user: store.user }));
   const theme = useTheme();
