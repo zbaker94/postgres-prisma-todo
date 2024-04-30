@@ -69,12 +69,11 @@ export default function HomeLayout({
   const { user } = useAuthStore((store) => ({ user: store.user }));
   const theme = useTheme();
   const searchParams = useSearchParams();
-  const tab = searchParams.get("tab");
   return (
-    <Box sx={{ display: "flex" }}>
-      <AppBar
-        position="fixed"
-        sx={{ zIndex: theme.zIndex.drawer + 1 }}
+    <Box sx={{ display: "flex", flexWrap: "wrap" }}>
+      {/* <AppBar
+        position="sticky"
+        sx={{ zIndex: theme.zIndex.drawer + 1, height: "50%" }}
         component={motion.header}
         initial={{ marginLeft: 0, width: "100%", y: -10 }}
         animate={
@@ -84,7 +83,7 @@ export default function HomeLayout({
                 width: `calc(100% - ${drawerWidth}px)`,
                 y: 0,
               }
-            : { marginLeft: drawerWidth, y: 0, width: "100%" }
+            : { marginLeft: 0, y: 0, width: "100%" }
         }
       >
         <Toolbar>
@@ -92,13 +91,13 @@ export default function HomeLayout({
             VOMIT
           </Typography>
         </Toolbar>
-      </AppBar>
+      </AppBar> */}
       <Drawer
         open={sidebarOpen}
         PaperProps={{
           component: motion.div,
           initial: {
-            x: -drawerWidth,
+            x: -drawerWidth / 4,
           },
           animate: {
             x: 0,
@@ -126,7 +125,17 @@ export default function HomeLayout({
           }}
         >
           <Avatar sx={{ marginRight: "4px" }} />
-          <Typography>{user?.name}</Typography>
+          <Typography
+            component={motion.p}
+            initial={{ marginLeft: 0, opacity: 0 }}
+            animate={
+              sidebarOpen
+                ? { marginLeft: 12, opacity: 1 }
+                : { marginLeft: 0, opacity: 0 }
+            }
+          >
+            {user?.name}
+          </Typography>
         </Box>
         <Divider />
         <List
@@ -134,7 +143,7 @@ export default function HomeLayout({
             overflowX: "hidden",
           }}
         >
-          {menuOptions.map((option) => (
+          {menuOptions.map((option, index) => (
             <ListItem key={option.key} disablePadding sx={{ display: "block" }}>
               <Link
                 href={option.href}
@@ -147,6 +156,10 @@ export default function HomeLayout({
                     justifyContent: sidebarOpen ? "initial" : "center",
                     px: 2.5,
                   }}
+                  component={motion.div}
+                  initial={{ x: -5, opacity: 0 }}
+                  animate={{ x: 0, opacity: 1 }}
+                  transition={{ delay: 0.1 * index + 0.2 }}
                 >
                   <ListItemIcon
                     sx={{
@@ -174,7 +187,17 @@ export default function HomeLayout({
         </List>
         <Divider />
       </Drawer>
-      <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+      <Box
+        component="main"
+        sx={{
+          flexGrow: 1,
+          p: 3,
+          marginLeft: "33px",
+          paddingTop: "12px",
+          height: "100vh",
+          overflowY: "auto",
+        }}
+      >
         {children}
       </Box>
     </Box>

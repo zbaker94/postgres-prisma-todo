@@ -12,12 +12,13 @@ datasource db {
 }
 
 model users {
-  id        Int        @id @default(autoincrement())
+  id        Int      @id @default(autoincrement())
   name      String
-  email     String     @unique
+  email     String   @unique
   image     String
-  createdAt DateTime   @default(now())
-  account  account?     @relation()
+  createdAt DateTime @default(now())
+  account   account? @relation()
+  vent      vent[]
 }
 
 model account {
@@ -27,4 +28,21 @@ model account {
   userId    Int      @unique
   user      users    @relation(fields: [userId], references: [id])
   createdAt DateTime @default(now())
+}
+
+model sentiment {
+  id        Int      @id @default(autoincrement())
+  name      String
+  createdAt DateTime @default(now())
+  vent      vent[]
+}
+
+model vent {
+  id          Int       @id @default(autoincrement())
+  userId      Int
+  user        users     @relation(fields: [userId], references: [id])
+  content     String
+  sentimentId Int
+  sentiment   sentiment @relation(fields: [sentimentId], references: [id])
+  createdAt   DateTime  @default(now())
 }
