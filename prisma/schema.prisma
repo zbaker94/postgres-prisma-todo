@@ -38,11 +38,11 @@ model sentiment {
 }
 
 model vent {
-  id          Int       @id @default(autoincrement())
+  id          Int        @id @default(autoincrement())
   userId      Int
-  user        users     @relation(fields: [userId], references: [id])
+  user        users      @relation(fields: [userId], references: [id])
   content     String
-  sentimentId Int
-  sentiment   sentiment @relation(fields: [sentimentId], references: [id])
-  createdAt   DateTime  @default(now())
+  sentimentId Int?       @unique
+  sentiment   sentiment? @relation(fields: [sentimentId], references: [id])
+  createdAt   DateTime   @default(now())
 }

@@ -20,6 +20,7 @@ import {
 } from "@mui/icons-material";
 import { format } from "date-fns";
 import TabPanel from "./tabpanel";
+import Vent from "./components/vent";
 
 const a11yProps = (index: number) => {
   return {
@@ -33,26 +34,31 @@ const tabConfig = [
     label: "Vent",
     key: "vent",
     icon: PriorityHigh,
+    component: Vent,
   },
   {
     label: "Obligations",
     key: "obligations",
     icon: Checklist,
+    component: () => {},
   },
   {
     label: "Mindset",
     key: "mindset",
     icon: Psychology,
+    component: () => {},
   },
   {
     label: "Ideate",
     key: "ideate",
     icon: Lightbulb,
+    component: () => {},
   },
   {
     label: "Trajectory",
     key: "trajectory",
     icon: Directions,
+    component: () => {},
   },
 ];
 
@@ -63,7 +69,9 @@ const TodayTabs = () => {
 
   const handleChange = useCallback(
     (event: SyntheticEvent | null, newValue: number) => {
-      router.replace(`/home/today?tab=${newValue}`);
+      console.log("navigating to tab " + newValue);
+
+      router.replace(`?tab=${newValue}`);
       setTabIndex(newValue);
     },
     [router],
@@ -71,7 +79,7 @@ const TodayTabs = () => {
 
   useEffect(() => {
     if (!tab) {
-      handleChange(null, tabIndex ?? 0);
+      handleChange(null, tabIndex || 0);
     }
   }, [handleChange, tab, tabIndex]);
 
@@ -97,26 +105,28 @@ const TodayTabs = () => {
               {...a11yProps(index)}
             />
           ))}
+          <Typography
+            component={motion.h5}
+            variant="h6"
+            textAlign={"right"}
+            marginLeft={"12px"}
+            fontWeight={600}
+            width={"100%"}
+            color={"text.secondary"}
+            initial={{ y: 5, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: -5, opacity: 0 }}
+            transition={{ delay: 0.1 }}
+          >
+            {format(new Date(), "EEEE, LLLL do ',' yyyy")}
+          </Typography>
         </Tabs>
       </Box>
-      <Typography
-        component={motion.h5}
-        variant="h6"
-        textAlign={"right"}
-        marginLeft={"12px"}
-        fontWeight={600}
-        color={"text.secondary"}
-        initial={{ y: 5, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        exit={{ y: -5, opacity: 0 }}
-        transition={{ delay: 0.1 }}
-      >
-        {format(new Date(), "'Today is' EEEE', the' do 'of' LLLL',' yyyy")}
-      </Typography>
 
       {tabConfig.map((config, index) => (
         <TabPanel key={config.key} index={index} value={tabIndex}>
-          {config.label}
+          <config.component />
+          {/* {config.label} */}
         </TabPanel>
       ))}
       <SpeedDial

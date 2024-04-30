@@ -35,7 +35,6 @@ const AuthListener = () => {
           if (expireTimeRef.current < 1000 * 60 * 2) {
             await refreshToken();
           }
-          console.log(`expireTimeRef.current`, expireTimeRef.current);
           expireTimeRef.current = expireTimeRef.current - 1000;
         }
       }, 1000);
